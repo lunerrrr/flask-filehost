@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>newsfeed's file repo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <h1>newsfeed's file repo</h1>
+
+    <form action="{{ url_for('search') }}" method="get">
+        <input type="text" name="q" placeholder="Search files">
+        <button type="submit">Search</button>
+    </form>
+
+    <div class="navigation">
+        {% if parent_path %}
+            <a href="{{ url_for('index', subpath=parent_path) }}" class="navigate-up">Parent Directory</a>
+        {% endif %}
+    </div>
+
+    {% if empty_message %}
+        <div class="message">{{ empty_message }}</div>
+    {% endif %}
+
+    <ul class="file-list">
+        {% for directory in directories %}
+            <li>
+                <a href="{{ url_for('index', subpath=directory) }}">
+                    <img src="{{ url_for('static', filename='icons/folder.png') }}" class="file-icon" alt="Directory">
+                    {{ directory.split('/')[-1] }}
+                </a>
+            </li>
+        {% endfor %}
+
+        {% for file in files %}
+            <li>
+                <a href="{{ url_for('download', filename=file.path) }}">
+                    <img src="{{ url_for('static', filename=file.icon) }}" class="file-icon" alt="File">
+                    {{ file.name }} - <span class="file-size">{{ "{:,}".format(file.size) }} bytes</span>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+    <footer>by <a href="https://github.com/newsfeed-ops">newsfeed</a>. made with flask and love <3</footer>
+</body>
+</html>
